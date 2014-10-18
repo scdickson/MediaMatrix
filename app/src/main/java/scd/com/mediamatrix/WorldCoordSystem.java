@@ -36,12 +36,12 @@ public class WorldCoordSystem{
 
             for(Device device : row){
                 if(device.isVert){
-                    maxWidth+= device.height;
-                    if(maxHeight < device.width) maxHeight = device.width;
+                    maxWidth += device.width;
+                    if(maxHeight < device.height) maxHeight = device.height;
                 }
                 else {
-                    maxWidth += device.width;
-                    if(maxHeight < device.width) maxHeight = device.height;
+                    maxWidth += device.height;
+                    if(maxHeight < device.width) maxHeight = device.width;
                 }
             }
             worldHeight += maxHeight;
