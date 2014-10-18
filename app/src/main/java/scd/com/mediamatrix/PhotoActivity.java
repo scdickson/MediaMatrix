@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.firebase.client.Firebase;
@@ -25,6 +26,7 @@ public class PhotoActivity extends Activity {
 
     Context context;
     static Firebase myFirebaseRef;
+    ImageView imagePreview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +43,8 @@ public class PhotoActivity extends Activity {
 
         TextView castHelpView = (TextView) findViewById(R.id.cast_help);
         castHelpView.setText("Arrange devices as shown above, then cast away!");
+
+        imagePreview = (ImageView) findViewById(R.id.preview);
 
         Button castButton = (Button) findViewById(R.id.action_cast);
         castButton.setOnClickListener(new View.OnClickListener() {
@@ -68,6 +72,9 @@ public class PhotoActivity extends Activity {
                         e.printStackTrace();
                     }
                     Bitmap yourSelectedImage = BitmapFactory.decodeStream(imageStream);
+
+                    // Update the image preview to be the selected image
+                    imagePreview.setImageBitmap(yourSelectedImage);
                     // Encode the selected image and store it into FireBase
                     String encodedImage = MainActivity.encodeTobase64(yourSelectedImage);
 

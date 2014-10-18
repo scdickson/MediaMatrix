@@ -34,4 +34,19 @@
     </LinearLayout>
 
 
+    <RelativeLayout
+        android:id="@+id/photoPreviewRelativeLayout"
+        android:layout_centerInParent="true"
+        android:background="@drawable/rounded_rectangle_transparent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/preview"
+            android:layout_marginBottom="5dp"
+            android:layout_centerHorizontal="true"
+            android:layout_width="400dp"
+            android:layout_height="400dp"
+            android:src="@drawable/placeholder"/>
+    </RelativeLayout>
 </RelativeLayout>
