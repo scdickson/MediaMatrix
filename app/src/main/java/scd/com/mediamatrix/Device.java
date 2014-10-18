@@ -25,7 +25,7 @@ public class Device {
             this.height = jsonObject.getInt("HEIGHT");
             this.isVert = jsonObject.getBoolean("IS_VERTICAL");
             this.flipped = jsonObject.getBoolean("IS_FLIPPED");
-            Log.d("test", deviceID + " " + width + " " + height + " " + isVert + " " + flipped);
+            //Log.d("test", deviceID + " " + width + " " + height + " " + isVert + " " + flipped);
 
 
         } catch (JSONException e) {
@@ -33,6 +33,11 @@ public class Device {
         }
 
         WorldCoordSystem.addDevice(this);
+    }
+
+    public String toString()
+    {
+        return (deviceID + ", (" + width + "," + height + "), isVertical=" + isVert + ", isFlipped=" + flipped);
     }
 
 //    public Device(int width, int height, boolean isVert) {

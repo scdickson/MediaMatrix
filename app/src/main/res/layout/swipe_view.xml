@@ -9,19 +9,35 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"/>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
     <Button
         android:visibility="gone"
-        android:layout_centerInParent="true"
         android:layout_margin="5dp"
-        android:layout_below="@id/main_logo"
         android:id="@+id/new_row_action"
         android:padding="10dp"
         android:textColor="#fff"
         android:textStyle="bold"
-        android:textSize="50sp"
+        android:textSize="15sp"
         android:background="@drawable/rounded_rectangle_green"
         android:text="New Row"
-        android:layout_width="150dp"
-        android:layout_height="150dp" />
+        android:layout_weight="0.5"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content" />
+        <Button
+            android:visibility="gone"
+            android:layout_margin="5dp"
+            android:id="@+id/done_add_action"
+            android:padding="10dp"
+            android:textColor="#fff"
+            android:textStyle="bold"
+            android:textSize="15sp"
+            android:background="@drawable/rounded_rectangle_gray"
+            android:text="Done"
+            android:layout_weight="0.5"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
 
 </RelativeLayout>
