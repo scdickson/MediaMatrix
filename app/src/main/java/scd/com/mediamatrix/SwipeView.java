@@ -6,9 +6,15 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
+import android.os.Build;
 import android.util.Log;
+import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.Toast;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -18,12 +24,14 @@ import java.util.ArrayList;
 public class SwipeView extends View implements View.OnTouchListener
 {
     boolean reset = false;
+    Context context;
     Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    ArrayList<Point> points = new ArrayList<Point>();
+    ArrayList<MMPoint> points = new ArrayList<MMPoint>();
 
     public SwipeView(Context context)
     {
         super(context);
+        this.context = context;
         setFocusable(true);
         setFocusableInTouchMode(true);
         setBackgroundColor(Color.BLACK);
@@ -39,7 +47,7 @@ public class SwipeView extends View implements View.OnTouchListener
     {
         Path path = new Path();
         boolean first = true;
-        for(Point point : points)
+        for(MMPoint point : points)
         {
             if(first)
             {
@@ -64,7 +72,7 @@ public class SwipeView extends View implements View.OnTouchListener
                 reset = false;
             }
 
-            Point point = new Point();
+            MMPoint point = new MMPoint();
             point.x = event.getX();
             point.y = event.getY();
             points.add(point);
@@ -73,13 +81,68 @@ public class SwipeView extends View implements View.OnTouchListener
         }
         else
         {
+            WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+            Display display = wm.getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+
+            boolean isVertical = calculate2DOrientation();
+            boolean isFlipped = calculateIsFlipped(isVertical);
+            JSONObject deviceparams = new JSONObject();
+            try
+            {
+                deviceparams.put("SERIAL", Build.SERIAL);
+                deviceparams.put("WIDTH", size.x);
+                deviceparams.put("HEIGHT", size.y);
+                deviceparams.put("IS_VERTICAL", isVertical);
+                deviceparams.put("IS_FLIPPED", isFlipped);
+            }
+            catch(Exception e)
+            {
+                e.printStackTrace();
+            }
+
+            MatrixInitialization.myFirebaseRef.child("1234").child(Build.SERIAL).child("json").setValue(deviceparams.toString());
+
             reset = true;
             return true;
         }
         //return super.onTouchEvent(event);
     }
 
-    class Point {
+    public boolean calculateIsFlipped(boolean isVertical)
+    {
+        MMPoint start = points.get(0);
+
+        if(isVertical)
+        {
+
+        }
+        else
+        {
+
+        }
+
+        return false;
+    }
+
+    public boolean calculate2DOrientation()
+    {
+        MMPoint start = points.get(0);
+        MMPoint end = points.get(points.size()-1);
+        int slope = (int) ((end.y - start.y)/(end.x - start.x));
+
+        if(slope != 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    class MMPoint {
         float x, y;
         @Override
         public String toString() {

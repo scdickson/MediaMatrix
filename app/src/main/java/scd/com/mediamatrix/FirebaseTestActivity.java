@@ -23,7 +23,7 @@ public class FirebaseTestActivity extends Activity
 
         Firebase.setAndroidContext(this);
         Firebase myFirebaseRef = new Firebase("https://mediamatrix.firebaseio.com/");
-        myFirebaseRef.child("message").setValue("Test");
+        myFirebaseRef.child("message").setValue("Test2");
         Toast.makeText(this, "TESTING", Toast.LENGTH_LONG).show();
     }
 
