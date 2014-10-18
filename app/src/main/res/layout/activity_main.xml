@@ -41,7 +41,7 @@
         android:layout_margin="5dp"
         android:layout_centerHorizontal="true"
         android:layout_below="@id/create_action"
-        android:id="@+id/create_join"
+        android:id="@+id/join_action"
         android:padding="10dp"
         android:textColor="#fff"
         android:textSize="20sp"

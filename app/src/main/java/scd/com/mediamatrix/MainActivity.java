@@ -1,19 +1,28 @@
 package scd.com.mediamatrix;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.Toast;
 
+<<<<<<< HEAD
 import java.util.ArrayList;
 
+=======
+import com.firebase.client.Firebase;
+>>>>>>> c7c7109c2a7dbb1d7fd0da0a5e91c0bf480f6d6e
 
-public class MainActivity extends Activity
+
+public class MainActivity extends Activity implements View.OnClickListener
 {
-    SwipeView swipeView;
+    Button createMatrix, joinMatrix;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +32,7 @@ public class MainActivity extends Activity
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         setContentView(R.layout.activity_main);
+
         //swipeView = new SwipeView(this);
         //setContentView(swipeView);
         //swipeView.requestFocus();
@@ -43,9 +53,27 @@ public class MainActivity extends Activity
 //        WorldCoordSystem.addRow(row);
 //
 //        WorldCoordSystem.setWorldCoordSystem();
-        Log.d("test", "World width = " + WorldCoordSystem.worldWidth + " World height = " + WorldCoordSystem.worldHeight);
+        //Log.d("test", "World width = " + WorldCoordSystem.worldWidth + " World height = " + WorldCoordSystem.worldHeight);
+
+        createMatrix = (Button) findViewById(R.id.create_action);
+        createMatrix.setOnClickListener(this);
+        joinMatrix = (Button) findViewById(R.id.join_action);
+        joinMatrix.setOnClickListener(this);
+
     }
 
+    public void onClick(View view)
+    {
+        if(view.equals(createMatrix))
+        {
+            Intent intent = new Intent(this, MatrixInitialization.class);
+            startActivity(intent);
+        }
+        else if(view.equals(joinMatrix))
+        {
+
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
