@@ -2,10 +2,10 @@ package scd.com.mediamatrix;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.Window;
@@ -13,7 +13,6 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -21,8 +20,6 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
 import org.json.JSONObject;
-
-import java.util.ArrayList;
 
 /**
  * Created by sdickson on 10/18/14.
@@ -90,7 +87,9 @@ public class MatrixInitialization extends Activity
                 @Override
                 public void onClick(View view)
                 {
-
+                    // Open up the activity that contains the photo selection process
+                    Intent photoActivityIntent = new Intent(MatrixInitialization.this, PhotoActivity.class);
+                    startActivity(photoActivityIntent);
                 }
             });
 

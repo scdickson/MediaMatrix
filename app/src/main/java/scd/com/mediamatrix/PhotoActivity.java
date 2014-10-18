@@ -8,8 +8,11 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.firebase.client.Firebase;
 
@@ -30,15 +33,24 @@ public class PhotoActivity extends Activity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        setContentView(R.layout.swipe_view);
+        setContentView(R.layout.photo_view);
         context = this;
 
         Firebase.setAndroidContext(this);
         myFirebaseRef = new Firebase("https://mediamatrix.firebaseio.com/");
 
-        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-        photoPickerIntent.setType("image/*");
-        startActivityForResult(photoPickerIntent, SELECT_PHOTO);
+        TextView castHelpView = (TextView) findViewById(R.id.cast_help);
+        castHelpView.setText("Arrange devices as shown above, then cast away!");
+
+        Button castButton = (Button) findViewById(R.id.action_cast);
+        castButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // Open up the image gallery and get an image
+                Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+                photoPickerIntent.setType("image/*");
+                startActivityForResult(photoPickerIntent, SELECT_PHOTO);
+            }
+        });
     }
 
     @Override
