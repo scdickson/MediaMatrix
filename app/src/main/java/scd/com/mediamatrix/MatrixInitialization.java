@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.Window;
@@ -21,6 +22,8 @@ import com.firebase.client.ValueEventListener;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 /**
  * Created by sdickson on 10/18/14.
  */
@@ -30,7 +33,8 @@ public class MatrixInitialization extends Activity
     static String SESSION_ID;
     static boolean isMaster;
     static Firebase myFirebaseRef;
-    static int numConnected = 1;
+    static int numConnected = 0;
+    static int width = 0;
     ArrayList<Device> devices = new ArrayList<Device>();
 
     @Override
@@ -66,7 +70,10 @@ public class MatrixInitialization extends Activity
 
         Firebase.setAndroidContext(this);
         myFirebaseRef = new Firebase("https://mediamatrix.firebaseio.com/" + SESSION_ID + "/");
-        myFirebaseRef.child(Build.SERIAL).child("json").setValue(deviceparams.toString());
+
+        if(!isMaster) {
+            myFirebaseRef.child(Build.SERIAL).child("json").setValue(deviceparams.toString());
+        }
 
         setContentView(R.layout.swipe_view);
         ImageView mainImage = (ImageView) findViewById(R.id.image);
@@ -75,14 +82,6 @@ public class MatrixInitialization extends Activity
         ImageView imagePerson = (ImageView) findViewById(R.id.person_icon);
         TextView sessionHelp = (TextView) findViewById(R.id.session_help);
         Button actionDone = (Button) findViewById(R.id.action_done);
-        actionDone.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view)
-            {
-                SortAndFill saf = new SortAndFill(devices, 100);
-                saf.Pack();
-            }
-        });
 
 
         if(isMaster)
@@ -96,6 +95,10 @@ public class MatrixInitialization extends Activity
                 @Override
                 public void onClick(View view)
                 {
+
+                    Log.d("mm", "Calling SAF with ArrayList size " + devices.size() + " and width " + width);
+                    SortAndFill saf = new SortAndFill(devices, width);
+                    saf.Pack();
                     // Open up the activity that contains the photo selection process
                     Intent photoActivityIntent = new Intent(MatrixInitialization.this, PhotoActivity.class);
                     startActivity(photoActivityIntent);
@@ -110,9 +113,43 @@ public class MatrixInitialization extends Activity
                     try
                     {
                         String data[] = snapshot.getValue().toString().split(", ");
+                        Log.d("mm", snapshot.getValue().toString());
+
+                        if(snapshot.getValue().toString().contains(", "))
+                        {
+                            for(String line : data)
+                            {
+                                JSONObject json = new JSONObject(line.substring(line.indexOf("json=") + "json=".length(), line.length()-1));
+                                Device dev = new Device(json);
+                                //Log.d("mm", dev.toString());
+                                width += dev.width;
+
+                                if(!devices.contains(dev))
+                                {
+                                    Log.d("mm", "ADD");
+                                    devices.add(dev);
+                                }
+                            }
+                        }
+                        else //Catches case where only one device is in matrix
+                        {
+                            JSONObject json = new JSONObject(data[0].substring(data[0].indexOf("json="), data[0].length()-1));
+                            Device dev = new Device(json);
+                            //Log.d("mm", dev.toString());
+                            width += dev.width;
+
+                            if(!devices.contains(dev))
+                            {
+                                Log.d("mm", "ADD");
+                                devices.add(dev);
+                            }
+                        }
+
                         numConnected = data.length;
                     }
-                    catch(Exception e){}
+                    catch(Exception e){
+                        e.printStackTrace();
+                    }
 
                     String stringRsc = null;
 

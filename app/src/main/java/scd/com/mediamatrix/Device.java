@@ -53,7 +53,7 @@ public class Device {
     }
     public String toString()
     {
-        return (deviceID + ", (" + width + "," + height + "), isVertical=" + isVert + ", isFlipped=" + flipped + ", AT (" + coords.get(0).x + ", " + coords.get(0).y + ")");
+            return (deviceID + ", (" + width + "," + height + "), " + " AT (" + coords.get(0).x + ", " + coords.get(0).y + ")");
     }
 
 //    public Device(int width, int height, boolean isVert) {
