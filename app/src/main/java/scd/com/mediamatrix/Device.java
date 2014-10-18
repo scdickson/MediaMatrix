@@ -1,11 +1,14 @@
 package scd.com.mediamatrix;
 
 import android.app.Application;
+import android.graphics.Point;
 import android.test.ApplicationTestCase;
 import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 /**
  * <a href="http://d.android.com/tools/testing/testing_android.html">Testing Fundamentals</a>
@@ -16,6 +19,8 @@ public class Device {
     int height;
     boolean isVert;
     boolean flipped;
+    ArrayList<Point> coords = new ArrayList<Point>();
+
 
     public Device(JSONObject jsonObject) {
 
@@ -33,6 +38,10 @@ public class Device {
         }
 
         WorldCoordSystem.addDevice(this);
+    }
+
+    public void setCoords(Point p, int x, int y){
+
     }
 
 //    public Device(int width, int height, boolean isVert) {
