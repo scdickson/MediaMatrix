@@ -2,10 +2,13 @@ package scd.com.mediamatrix;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
+
+import java.util.ArrayList;
 
 
 public class MainActivity extends Activity
@@ -23,6 +26,24 @@ public class MainActivity extends Activity
         //swipeView = new SwipeView(this);
         //setContentView(swipeView);
         //swipeView.requestFocus();
+
+        //test code
+//        new Device(1, 3, false);
+//        new Device(2, 2, true);
+//        new Device(2, 3, false);
+//        new Device(3, 1, true);
+//        ArrayList<Device> row = new ArrayList<Device>();
+//        row.add(WorldCoordSystem.devices.get(0));
+//        row.add(WorldCoordSystem.devices.get(1));
+//        row.add(WorldCoordSystem.devices.get(2));
+//        WorldCoordSystem.addRow(row);
+//        row.clear();
+//        row.add(WorldCoordSystem.devices.get(0));
+//        row.add(WorldCoordSystem.devices.get(3));
+//        WorldCoordSystem.addRow(row);
+//
+//        WorldCoordSystem.setWorldCoordSystem();
+        Log.d("test", "World width = " + WorldCoordSystem.worldWidth + " World height = " + WorldCoordSystem.worldHeight);
     }
 
 
