@@ -1,7 +1,9 @@
 package scd.com.mediamatrix;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -98,13 +100,27 @@ public class MatrixInitialization extends Activity
                 @Override
                 public void onClick(View view)
                 {
-
-                    Log.d("mm", "Calling SAF with ArrayList size " + devices.size() + " and width " + width);
-                    SortAndFill saf = new SortAndFill(devices, width);
-                    saf.Pack();
-                    // Open up the activity that contains the photo selection process
-                    Intent photoActivityIntent = new Intent(MatrixInitialization.this, PhotoActivity.class);
-                    startActivity(photoActivityIntent);
+                    if(devices.size() < 1)
+                    {
+                        new AlertDialog.Builder(getApplicationContext())
+                                .setTitle("Error")
+                                .setMessage("You can't display an image with one or fewer devices...")
+                                .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        // continue with delete
+                                    }
+                                })
+                                .setIcon(R.drawable.doge)
+                                .show();
+                    }
+                    else {
+                        Log.d("mm", "Calling SAF with ArrayList size " + devices.size() + " and width " + width);
+                        SortAndFill saf = new SortAndFill(devices, width);
+                        saf.Pack();
+                        // Open up the activity that contains the photo selection process
+                        Intent photoActivityIntent = new Intent(MatrixInitialization.this, PhotoActivity.class);
+                        startActivity(photoActivityIntent);
+                    }
                 }
             });
 
@@ -204,7 +220,7 @@ public class MatrixInitialization extends Activity
         {
             int id = getResources().getIdentifier("scd.com.mediamatrix:drawable/hourglass", null, null);
             imageNumber.setImageResource(id);
-            sessionHelp.setText("Waiting for all users to join...");
+            //sessionHelp.setText("Waiting for all users to join...");
 
             imagePerson.setVisibility(View.GONE);
             actionDone.setVisibility(View.GONE);
@@ -223,6 +239,7 @@ public class MatrixInitialization extends Activity
                             //Log.d("mm", rawImage.substring(rawImage.indexOf("{IMAGE=") + "{IMAGE=".length()));
                             Bitmap b = MainActivity.decodeBase64(rawImage);
                             imageNumber.setImageBitmap(b);
+
                         }
                     }
                     catch(Exception e){
@@ -244,8 +261,20 @@ public class MatrixInitialization extends Activity
     protected void onDestroy()
     {
         super.onDestroy();
-        Firebase condemned = new Firebase("https://mediamatrix.firebaseio.com/" + SESSION_ID + "/" + Build.SERIAL);
-        condemned.removeValue();
+
+        if(isMaster)
+        {
+            devices.clear();
+            numConnected = 0;
+            width = 0;
+            Firebase condemned = new Firebase("https://mediamatrix.firebaseio.com/" + SESSION_ID);
+            condemned.removeValue();
+        }
+        else
+        {
+            Firebase condemned = new Firebase("https://mediamatrix.firebaseio.com/" + SESSION_ID + "/" + Build.SERIAL);
+            condemned.removeValue();
+        }
     }
 
 
