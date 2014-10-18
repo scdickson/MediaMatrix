@@ -34,6 +34,7 @@ import java.util.ArrayList;
  */
 public class MatrixInitialization extends Activity
 {
+    Context context;
     SwipeView swipeView;
     static String SESSION_ID;
     static boolean isMaster;
@@ -50,7 +51,7 @@ public class MatrixInitialization extends Activity
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         setContentView(R.layout.activity_main);
-
+        this.context = this;
         SESSION_ID = getIntent().getStringExtra("SESSION_ID");
         isMaster = getIntent().getBooleanExtra("IS_MASTER", false);
 
@@ -102,7 +103,7 @@ public class MatrixInitialization extends Activity
                 {
                     if(devices.size() < 1)
                     {
-                        new AlertDialog.Builder(getApplicationContext())
+                        new AlertDialog.Builder(context)
                                 .setTitle("Error")
                                 .setMessage("You can't display an image with one or fewer devices...")
                                 .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
@@ -110,7 +111,6 @@ public class MatrixInitialization extends Activity
                                         // continue with delete
                                     }
                                 })
-                                .setIcon(R.drawable.doge)
                                 .show();
                     }
                     else {

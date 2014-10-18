@@ -13,13 +13,13 @@ import java.util.Comparator;
 public class SortAndFill
 {
     ArrayList<Device> devices;
-    int width;
+    int max_height, max_width;
 
     public SortAndFill(ArrayList<Device> devices, int width)
     {
         Log.d("mm", "OK. New SortAndFill.");
         this.devices = devices;
-        this.width = width;
+        this.max_width = width;
         sortByHeight();
 
     }
@@ -50,7 +50,7 @@ public class SortAndFill
             int next_device = -1;
             for(int i = 0; i < notPositioned.size(); i++)
             {
-                if(x + notPositioned.get(i).width <= width)
+                if(x + notPositioned.get(i).width <= max_width)
                 {
                     next_device = i;
                     break;
@@ -78,6 +78,8 @@ public class SortAndFill
             notPositioned.remove(next_device);
 
         } while(!notPositioned.isEmpty());
+
+        max_height = row_height;
 
         for(int i = 0; i < positioned.size(); i++)
         {

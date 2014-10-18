@@ -100,7 +100,7 @@ public class MainActivity extends Activity implements View.OnClickListener
             AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
             alert.setTitle("Create a New Media Matrix!");
-            alert.setMessage("Enter Your Code:");
+            alert.setMessage("Enter a Unique 4-Digit Code:");
 
             final EditText input = new EditText(this);
             input.setInputType(InputType.TYPE_CLASS_NUMBER);

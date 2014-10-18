@@ -78,7 +78,7 @@ public class PhotoActivity extends Activity {
                     imagePreview.setImageBitmap(yourSelectedImage);
                     // Encode the selected image and store it into FireBase
                     String encodedImage = MainActivity.encodeTobase64(yourSelectedImage);
-                    Log.d("mm", encodedImage);
+                    //Log.d("mm", encodedImage);
 
                     myFirebaseRef.child(MatrixInitialization.SESSION_ID).child("IMAGE").setValue(encodedImage);
                 }

@@ -64,12 +64,13 @@
         android:src="@drawable/text_logo"/>
 
     <ImageView
+        android:padding="5dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:id="@+id/info"
         android:src="@drawable/info"
         android:scaleType="fitXY"
-        android:layout_width="20dp"
-        android:layout_height="20dp" />
+        android:layout_width="30dp"
+        android:layout_height="30dp" />
 
 </RelativeLayout>
