@@ -51,10 +51,10 @@ public class SwipeView extends View implements View.OnTouchListener
     {
         setFocusable(true);
         setFocusableInTouchMode(true);
-        setBackgroundColor(Color.BLACK);
+        //setBackgroundColor(Color.BLACK);
         this.setOnTouchListener(this);
 
-        paint.setColor(Color.CYAN);
+        paint.setColor(Color.DKGRAY);
         paint.setDither(true);
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeJoin(Paint.Join.ROUND);
