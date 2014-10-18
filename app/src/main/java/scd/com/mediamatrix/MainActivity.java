@@ -20,6 +20,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 
 
 public class MainActivity extends Activity implements View.OnClickListener
@@ -37,30 +38,6 @@ public class MainActivity extends Activity implements View.OnClickListener
 
         setContentView(R.layout.activity_main);
         context = this;
-
-        //swipeView = new SwipeView(this);
-        //setContentView(swipeView);
-        //swipeView.requestFocus();
-
-        //test code
-//        new Device(1, 4, true);
-//        new Device(1, 3, false);
-//        new Device(1, 3, false);
-//        new Device(2, 2, true);
-//        new Device(2, 7, false);
-//        ArrayList<Device> row1 = new ArrayList<Device>();
-//        row1.add(WorldCoordSystem.devices.get(0));
-//        row1.add(WorldCoordSystem.devices.get(1));
-//        row1.add(WorldCoordSystem.devices.get(2));
-//        WorldCoordSystem.addRow(row1);
-//
-//        ArrayList<Device> row2 = new ArrayList<Device>();
-//        row2.add(WorldCoordSystem.devices.get(3));
-//        row2.add(WorldCoordSystem.devices.get(4));
-//        WorldCoordSystem.addRow(row2);
-//
-//        WorldCoordSystem.setWorldCoordSystem();
-//        Log.d("test", "World width = " + WorldCoordSystem.worldWidth + " World height = " + WorldCoordSystem.worldHeight);
 
         createMatrix = (Button) findViewById(R.id.create_action);
         createMatrix.setOnClickListener(this);

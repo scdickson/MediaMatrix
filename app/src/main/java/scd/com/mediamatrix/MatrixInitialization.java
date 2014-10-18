@@ -31,6 +31,7 @@ public class MatrixInitialization extends Activity
     static boolean isMaster;
     static Firebase myFirebaseRef;
     static int numConnected = 1;
+    ArrayList<Device> devices = new ArrayList<Device>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +75,14 @@ public class MatrixInitialization extends Activity
         ImageView imagePerson = (ImageView) findViewById(R.id.person_icon);
         TextView sessionHelp = (TextView) findViewById(R.id.session_help);
         Button actionDone = (Button) findViewById(R.id.action_done);
+        actionDone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view)
+            {
+                SortAndFill saf = new SortAndFill(devices, 100);
+                saf.Pack();
+            }
+        });
 
 
         if(isMaster)
