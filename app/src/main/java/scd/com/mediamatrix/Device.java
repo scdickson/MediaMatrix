@@ -2,6 +2,7 @@ package scd.com.mediamatrix;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
+import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,18 +18,31 @@ public class Device {
     boolean flipped;
 
     public Device(JSONObject jsonObject) {
+
         try {
             this.deviceID = jsonObject.getString("SERIAL");
             this.width = jsonObject.getInt("WIDTH");
             this.height = jsonObject.getInt("HEIGHT");
-            this.isVert = jsonObject.getBoolean("IS_VERT");
+            this.isVert = jsonObject.getBoolean("IS_VERTICAL");
             this.flipped = jsonObject.getBoolean("IS_FLIPPED");
+            Log.d("test", deviceID + " " + width + " " + height + " " + isVert + " " + flipped);
+
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
-//        this.width = width;
-//        this.height = height;
-//        this.flipped = flipped;
+
         WorldCoordSystem.addDevice(this);
     }
+
+//    public Device(int width, int height, boolean isVert) {
+//
+//        //this.deviceID = deviceID;
+//        this.width = width;
+//        this.height = height;
+//        this.isVert = isVert;
+//        //this.flipped = flipped;
+//
+//        WorldCoordSystem.addDevice(this);
+//    }
 }

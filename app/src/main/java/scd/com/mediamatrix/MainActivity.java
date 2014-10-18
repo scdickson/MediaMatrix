@@ -46,22 +46,24 @@ public class MainActivity extends Activity implements View.OnClickListener
         //swipeView.requestFocus();
 
         //test code
+//        new Device(1, 4, true);
+//        new Device(1, 3, false);
 //        new Device(1, 3, false);
 //        new Device(2, 2, true);
-//        new Device(2, 3, false);
-//        new Device(3, 1, true);
-//        ArrayList<Device> row = new ArrayList<Device>();
-//        row.add(WorldCoordSystem.devices.get(0));
-//        row.add(WorldCoordSystem.devices.get(1));
-//        row.add(WorldCoordSystem.devices.get(2));
-//        WorldCoordSystem.addRow(row);
-//        row.clear();
-//        row.add(WorldCoordSystem.devices.get(0));
-//        row.add(WorldCoordSystem.devices.get(3));
-//        WorldCoordSystem.addRow(row);
+//        new Device(2, 7, false);
+//        ArrayList<Device> row1 = new ArrayList<Device>();
+//        row1.add(WorldCoordSystem.devices.get(0));
+//        row1.add(WorldCoordSystem.devices.get(1));
+//        row1.add(WorldCoordSystem.devices.get(2));
+//        WorldCoordSystem.addRow(row1);
+//
+//        ArrayList<Device> row2 = new ArrayList<Device>();
+//        row2.add(WorldCoordSystem.devices.get(3));
+//        row2.add(WorldCoordSystem.devices.get(4));
+//        WorldCoordSystem.addRow(row2);
 //
 //        WorldCoordSystem.setWorldCoordSystem();
-        //Log.d("test", "World width = " + WorldCoordSystem.worldWidth + " World height = " + WorldCoordSystem.worldHeight);
+//        Log.d("test", "World width = " + WorldCoordSystem.worldWidth + " World height = " + WorldCoordSystem.worldHeight);
 
         createMatrix = (Button) findViewById(R.id.create_action);
         createMatrix.setOnClickListener(this);
@@ -87,9 +89,19 @@ public class MainActivity extends Activity implements View.OnClickListener
                 public void onClick(DialogInterface dialog, int whichButton)
                 {
                     String value = input.getText().toString();
-                    Intent intent = new Intent(context, MatrixInitialization.class);
-                    intent.putExtra("SESSION_ID", value);
-                    startActivity(intent);
+                    if(value != null && !value.isEmpty() && value.length() == 4)
+                    {
+                        /*Firebase.setAndroidContext(context);
+                        Firebase myFirebaseRef = new Firebase("https://mediamatrix.firebaseio.com/");
+                        myFirebaseRef.startAt(value);
+                        myFirebaseRef.endAt(value);
+                        */
+
+                        Intent intent = new Intent(context, MatrixInitialization.class);
+                        intent.putExtra("SESSION_ID", value);
+                        intent.putExtra("IS_MASTER", false);
+                        startActivity(intent);
+                    }
                 }
             });
 
@@ -108,6 +120,43 @@ public class MainActivity extends Activity implements View.OnClickListener
             Firebase myFirebaseRef = new Firebase("https://mediamatrix.firebaseio.com/");
             Bitmap icon = BitmapFactory.decodeResource(context.getResources(), R.drawable.doge);
             myFirebaseRef.child("DOGE").setValue(encodeTobase64(icon));*/
+
+            AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+            alert.setTitle("Create a New Media Matrix!");
+            alert.setMessage("Enter Your Code:");
+
+            final EditText input = new EditText(this);
+            input.setInputType(InputType.TYPE_CLASS_NUMBER);
+            alert.setView(input);
+
+            alert.setPositiveButton("Create", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton)
+                {
+                    String value = input.getText().toString();
+                    if(value != null && !value.isEmpty() && value.length() == 4)
+                    {
+                        /*Firebase.setAndroidContext(context);
+                        Firebase myFirebaseRef = new Firebase("https://mediamatrix.firebaseio.com/");
+                        myFirebaseRef.startAt(value);
+                        myFirebaseRef.endAt(value);
+                        */
+
+                        Intent intent = new Intent(context, MatrixInitialization.class);
+                        intent.putExtra("SESSION_ID", value);
+                        intent.putExtra("IS_MASTER", true);
+                        startActivity(intent);
+                    }
+                }
+            });
+
+            alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                    // Canceled.
+                }
+            });
+
+            alert.show();
         }
     }
 
