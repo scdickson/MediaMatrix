@@ -20,7 +20,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
+import java.util.ArrayList;
 import com.firebase.client.Firebase;
 
 import java.io.ByteArrayOutputStream;
@@ -40,10 +40,34 @@ public class MainActivity extends Activity implements View.OnClickListener
 
         setContentView(R.layout.activity_main);
         context = this;
+
+        //swipeView = new SwipeView(this);
+        //setContentView(swipeView);
+        //swipeView.requestFocus();
+
+        //test code
+//        new Device(1, 3, false);
+//        new Device(2, 2, true);
+//        new Device(2, 3, false);
+//        new Device(3, 1, true);
+//        ArrayList<Device> row = new ArrayList<Device>();
+//        row.add(WorldCoordSystem.devices.get(0));
+//        row.add(WorldCoordSystem.devices.get(1));
+//        row.add(WorldCoordSystem.devices.get(2));
+//        WorldCoordSystem.addRow(row);
+//        row.clear();
+//        row.add(WorldCoordSystem.devices.get(0));
+//        row.add(WorldCoordSystem.devices.get(3));
+//        WorldCoordSystem.addRow(row);
+//
+//        WorldCoordSystem.setWorldCoordSystem();
+        //Log.d("test", "World width = " + WorldCoordSystem.worldWidth + " World height = " + WorldCoordSystem.worldHeight);
+
         createMatrix = (Button) findViewById(R.id.create_action);
         createMatrix.setOnClickListener(this);
         joinMatrix = (Button) findViewById(R.id.join_action);
         joinMatrix.setOnClickListener(this);
+
     }
 
     public void onClick(View view)

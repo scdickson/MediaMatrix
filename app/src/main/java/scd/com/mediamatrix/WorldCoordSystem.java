@@ -29,20 +29,23 @@ public class WorldCoordSystem{
     }
 
     public static void setWorldCoordSystem() {
+
         for(ArrayList <Device> row : rows){
             int maxHeight = 0;
             int maxWidth = 0;
+
             for(Device device : row){
-                if(device.flipped){
+                if(device.isVert){
                     maxWidth+= device.height;
-                    if(maxHeight > device.width) maxHeight = device.width;
+                    if(maxHeight < device.width) maxHeight = device.width;
                 }
                 else {
                     maxWidth += device.width;
-                    if(maxHeight > device.width) maxHeight = device.height;
+                    if(maxHeight < device.width) maxHeight = device.height;
                 }
-
             }
+            worldHeight += maxHeight;
+            if(maxWidth > worldWidth) worldWidth = maxWidth;
 
         }
     }
