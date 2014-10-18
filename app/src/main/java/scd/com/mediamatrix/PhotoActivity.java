@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -77,8 +78,9 @@ public class PhotoActivity extends Activity {
                     imagePreview.setImageBitmap(yourSelectedImage);
                     // Encode the selected image and store it into FireBase
                     String encodedImage = MainActivity.encodeTobase64(yourSelectedImage);
+                    Log.d("mm", encodedImage);
 
-                    myFirebaseRef.child(Build.SERIAL).child("TESTING_IMAGE_SELECT").setValue(encodedImage);
+                    myFirebaseRef.child(MatrixInitialization.SESSION_ID).child("IMAGE").setValue(encodedImage);
                 }
         }
     }

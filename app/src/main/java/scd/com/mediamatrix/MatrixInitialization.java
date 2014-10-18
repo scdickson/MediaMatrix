@@ -3,9 +3,12 @@ package scd.com.mediamatrix;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
@@ -119,21 +122,22 @@ public class MatrixInitialization extends Activity
                         {
                             for(String line : data)
                             {
-                                JSONObject json = new JSONObject(line.substring(line.indexOf("json=") + "json=".length(), line.length()-1));
-                                Device dev = new Device(json);
-                                //Log.d("mm", dev.toString());
-                                width += dev.width;
+                                if(!line.contains("IMAGE")) {
+                                    JSONObject json = new JSONObject(line.substring(line.indexOf("json=") + "json=".length(), line.length() - 1));
+                                    Device dev = new Device(json);
+                                    //Log.d("mm", dev.toString());
+                                    width += dev.width;
 
-                                if(!devices.contains(dev))
-                                {
-                                    Log.d("mm", "ADD");
-                                    devices.add(dev);
+                                    if (!devices.contains(dev)) {
+                                        Log.d("mm", "ADD");
+                                        devices.add(dev);
+                                    }
                                 }
                             }
                         }
                         else //Catches case where only one device is in matrix
                         {
-                            JSONObject json = new JSONObject(data[0].substring(data[0].indexOf("json="), data[0].length()-1));
+                            JSONObject json = new JSONObject(data[0].substring(data[0].indexOf("json=") + "json=".length(), data[0].length()-1));
                             Device dev = new Device(json);
                             //Log.d("mm", dev.toString());
                             width += dev.width;
@@ -204,6 +208,31 @@ public class MatrixInitialization extends Activity
 
             imagePerson.setVisibility(View.GONE);
             actionDone.setVisibility(View.GONE);
+
+            myFirebaseRef = new Firebase("https://mediamatrix.firebaseio.com/" + SESSION_ID + "/IMAGE/");
+            myFirebaseRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot snapshot)
+                {
+                    try
+                    {
+                        String rawImage = snapshot.getValue().toString();
+                        //if (rawImage != null && rawImage.contains("IMAGE"))
+                        if (rawImage != null)
+                        {
+                            //Log.d("mm", rawImage.substring(rawImage.indexOf("{IMAGE=") + "{IMAGE=".length()));
+                            Bitmap b = MainActivity.decodeBase64(rawImage);
+                            imageNumber.setImageBitmap(b);
+                        }
+                    }
+                    catch(Exception e){
+                        e.printStackTrace();
+                    }
+                }
+
+                public void onCancelled(FirebaseError firebaseError) {
+                }
+            });
         }
 
         //SwipeView container = (SwipeView) findViewById(R.id.swipe_view);

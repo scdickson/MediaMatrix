@@ -156,8 +156,10 @@ public class MainActivity extends Activity implements View.OnClickListener
         immagex.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         byte[] b = baos.toByteArray();
         String imageEncoded = Base64.encodeToString(b,Base64.DEFAULT);
+
         return imageEncoded;
     }
+
     public static Bitmap decodeBase64(String input)
     {
         byte[] decodedByte = Base64.decode(input, 0);
