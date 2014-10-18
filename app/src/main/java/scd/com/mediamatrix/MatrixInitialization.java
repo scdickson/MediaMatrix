@@ -15,6 +15,7 @@ import com.firebase.client.Firebase;
 public class MatrixInitialization extends Activity
 {
     SwipeView swipeView;
+    static String SESSION_ID;
     static Firebase myFirebaseRef;
 
     @Override
@@ -26,6 +27,7 @@ public class MatrixInitialization extends Activity
 
         setContentView(R.layout.activity_main);
 
+        SESSION_ID = getIntent().getStringExtra("SESSION_ID");
         Firebase.setAndroidContext(this);
         myFirebaseRef = new Firebase("https://mediamatrix.firebaseio.com/");
 

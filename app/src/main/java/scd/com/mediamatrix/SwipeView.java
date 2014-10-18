@@ -3,6 +3,7 @@ package scd.com.mediamatrix;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
@@ -86,8 +87,11 @@ public class SwipeView extends View implements View.OnTouchListener
             Point size = new Point();
             display.getSize(size);
 
-            boolean isVertical = calculate2DOrientation();
-            boolean isFlipped = calculateIsFlipped(isVertical);
+            boolean isVertical = calculateIsVertical();
+            boolean isFlipped = calculateIsFlipped(isVertical, size);
+
+            //Toast.makeText(context, test, Toast.LENGTH_SHORT).show();
+
             JSONObject deviceparams = new JSONObject();
             try
             {
@@ -102,7 +106,7 @@ public class SwipeView extends View implements View.OnTouchListener
                 e.printStackTrace();
             }
 
-            MatrixInitialization.myFirebaseRef.child("1234").child(Build.SERIAL).child("json").setValue(deviceparams.toString());
+            MatrixInitialization.myFirebaseRef.child(MatrixInitialization.SESSION_ID).child(Build.SERIAL).child("json").setValue(deviceparams.toString());
 
             reset = true;
             return true;
@@ -110,23 +114,41 @@ public class SwipeView extends View implements View.OnTouchListener
         //return super.onTouchEvent(event);
     }
 
-    public boolean calculateIsFlipped(boolean isVertical)
+    public boolean calculateIsFlipped(boolean isVertical, Point dimens)
     {
-        MMPoint start = points.get(0);
+        Point start = new Point((int) points.get(0).x, (int) points.get(0).y);
 
         if(isVertical)
         {
+            Point LEFT_EDGE = new Point(0, dimens.y / 2);
+            Point RIGHT_EDGE = new Point(dimens.x, dimens.y / 2);
 
+            if(distance(start, LEFT_EDGE) < distance(start, RIGHT_EDGE))
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
         }
         else
         {
+            Point TOP_EDGE = new Point(dimens.x / 2, 0);
+            Point BOTTOM_EDGE = new Point(dimens.x / 2, dimens.y);
 
+            if(distance(start, TOP_EDGE) < distance(start, BOTTOM_EDGE))
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
         }
-
-        return false;
     }
 
-    public boolean calculate2DOrientation()
+    public boolean calculateIsVertical()
     {
         MMPoint start = points.get(0);
         MMPoint end = points.get(points.size()-1);
@@ -134,12 +156,17 @@ public class SwipeView extends View implements View.OnTouchListener
 
         if(slope != 0)
         {
-            return true;
+            return false;
         }
         else
         {
-            return false;
+            return true;
         }
+    }
+
+    public double distance(Point p1, Point p2)
+    {
+        return Math.sqrt(Math.pow((p2.x - p1.x), 2) + Math.pow((p2.y - p1.y), 2));
     }
 
     class MMPoint {
