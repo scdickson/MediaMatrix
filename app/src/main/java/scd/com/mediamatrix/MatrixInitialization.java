@@ -3,8 +3,11 @@ package scd.com.mediamatrix;
 import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.firebase.client.Firebase;
@@ -16,6 +19,7 @@ public class MatrixInitialization extends Activity
 {
     SwipeView swipeView;
     static String SESSION_ID;
+    static boolean isMaster;
     static Firebase myFirebaseRef;
 
     @Override
@@ -28,13 +32,36 @@ public class MatrixInitialization extends Activity
         setContentView(R.layout.activity_main);
 
         SESSION_ID = getIntent().getStringExtra("SESSION_ID");
+        isMaster = getIntent().getBooleanExtra("IS_MASTER", false);
+
         Firebase.setAndroidContext(this);
         myFirebaseRef = new Firebase("https://mediamatrix.firebaseio.com/");
 
-        swipeView = new SwipeView(this);
-        setContentView(swipeView);
-        swipeView.requestFocus();
+        setContentView(R.layout.swipe_view);
+        Button newRow = (Button) findViewById(R.id.new_row_action);
+
+        if(isMaster)
+        {
+            newRow.setVisibility(View.VISIBLE);
+            newRow.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                }
+            });
+        }
+        else
+        {
+            newRow.setVisibility(View.GONE);
+        }
+
+        SwipeView container = (SwipeView) findViewById(R.id.swipe_view);
+        container = new SwipeView(this);
+        container.requestFocus();
+
     }
+
+
 
 
 

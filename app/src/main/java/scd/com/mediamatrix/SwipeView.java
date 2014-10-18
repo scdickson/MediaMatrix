@@ -8,6 +8,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.os.Build;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
@@ -29,10 +30,28 @@ public class SwipeView extends View implements View.OnTouchListener
     Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
     ArrayList<MMPoint> points = new ArrayList<MMPoint>();
 
-    public SwipeView(Context context)
+    public SwipeView(final Context context)
     {
         super(context);
         this.context = context;
+        init();
+    }
+
+    public SwipeView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        this.context = context;
+        init();
+    }
+
+    public SwipeView(Context context, AttributeSet attrs, int defStyle)
+    {
+        super(context, attrs, defStyle);
+        this.context = context;
+        init();
+    }
+
+    public void init()
+    {
         setFocusable(true);
         setFocusableInTouchMode(true);
         setBackgroundColor(Color.BLACK);
