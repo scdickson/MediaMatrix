@@ -3,18 +3,15 @@ package scd.com.mediamatrix;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Toast;
 
 import org.json.JSONObject;
 
@@ -27,7 +24,7 @@ public class SwipeView extends View implements View.OnTouchListener
 {
     boolean reset = false;
     Context context;
-    Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    Paint paint = new Paint(Paint.FILTER_BITMAP_FLAG);
     ArrayList<MMPoint> points = new ArrayList<MMPoint>();
 
     public SwipeView(final Context context)
@@ -57,10 +54,14 @@ public class SwipeView extends View implements View.OnTouchListener
         setBackgroundColor(Color.BLACK);
         this.setOnTouchListener(this);
 
-        paint.setColor(Color.WHITE);
-        paint.setAntiAlias(true);
+        paint.setColor(Color.CYAN);
+        paint.setDither(true);
         paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(20);
+        paint.setStrokeJoin(Paint.Join.ROUND);
+        paint.setStrokeCap(Paint.Cap.ROUND);
+        paint.setAntiAlias(true);
+
+        paint.setStrokeWidth(25);
     }
 
     public void onDraw(Canvas canvas)
@@ -125,7 +126,12 @@ public class SwipeView extends View implements View.OnTouchListener
                 e.printStackTrace();
             }
 
-            MatrixInitialization.myFirebaseRef.child(MatrixInitialization.SESSION_ID).child(Build.SERIAL).child("json").setValue(deviceparams.toString());
+            MatrixInitialization.myFirebaseRef.child(Build.SERIAL).child("json").setValue(deviceparams.toString());
+
+            if(MatrixInitialization.isMaster)
+            {
+                new Device(deviceparams);
+            }
 
             reset = true;
             return true;
