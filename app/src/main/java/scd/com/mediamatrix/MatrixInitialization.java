@@ -1,13 +1,18 @@
 package scd.com.mediamatrix;
 
 import android.app.Activity;
+import android.content.Context;
+import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
@@ -28,6 +33,7 @@ public class MatrixInitialization extends Activity
     static String SESSION_ID;
     static boolean isMaster;
     static Firebase myFirebaseRef;
+    static int numConnected = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,81 +47,122 @@ public class MatrixInitialization extends Activity
         SESSION_ID = getIntent().getStringExtra("SESSION_ID");
         isMaster = getIntent().getBooleanExtra("IS_MASTER", false);
 
+        WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+
+        JSONObject deviceparams = new JSONObject();
+        try
+        {
+            deviceparams.put("SERIAL", Build.SERIAL);
+            deviceparams.put("WIDTH", size.x);
+            deviceparams.put("HEIGHT", size.y);
+            deviceparams.put("IS_VERTICAL", false);
+            deviceparams.put("IS_FLIPPED", false);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+
         Firebase.setAndroidContext(this);
         myFirebaseRef = new Firebase("https://mediamatrix.firebaseio.com/" + SESSION_ID + "/");
+        myFirebaseRef.child(Build.SERIAL).child("json").setValue(deviceparams.toString());
 
         setContentView(R.layout.swipe_view);
-        Button newRow = (Button) findViewById(R.id.new_row_action);
-        Button doneAction = (Button) findViewById(R.id.done_add_action);
+        ImageView mainImage = (ImageView) findViewById(R.id.image);
+
+        final ImageView imageNumber = (ImageView) findViewById(R.id.image_number);
+        ImageView imagePerson = (ImageView) findViewById(R.id.person_icon);
+        TextView sessionHelp = (TextView) findViewById(R.id.session_help);
+        Button actionDone = (Button) findViewById(R.id.action_done);
+
 
         if(isMaster)
         {
-            newRow.setVisibility(View.VISIBLE);
-            doneAction.setVisibility(View.VISIBLE);
-            newRow.setOnClickListener(new View.OnClickListener()
+            imageNumber.setVisibility(View.VISIBLE);
+            imagePerson.setVisibility(View.VISIBLE);
+            sessionHelp.setVisibility(View.VISIBLE);
+            sessionHelp.setText("Join With Code " + SESSION_ID + " and Press 'Done' When Finished!");
+            actionDone.setVisibility(View.VISIBLE);
+
+            myFirebaseRef.addValueEventListener(new ValueEventListener()
             {
                 @Override
-                public void onClick(View view)
+                public void onDataChange(DataSnapshot snapshot)
                 {
-                    myFirebaseRef.child("+").setValue("NEW ROW");
+                    try
+                    {
+                        String data[] = snapshot.getValue().toString().split(", ");
+                        numConnected = data.length;
+                    }
+                    catch(Exception e){}
+
+                    String stringRsc = null;
+
+                    switch (numConnected) {
+                        case 1:
+                            stringRsc = "scd.com.mediamatrix:drawable/one";
+                            break;
+                        case 2:
+                            stringRsc = "scd.com.mediamatrix:drawable/two";
+                            break;
+                        case 3:
+                            stringRsc = "scd.com.mediamatrix:drawable/three";
+                            break;
+                        case 4:
+                            stringRsc = "scd.com.mediamatrix:drawable/four";
+                            break;
+                        case 5:
+                            stringRsc = "scd.com.mediamatrix:drawable/five";
+                            break;
+                        case 6:
+                            stringRsc = "scd.com.mediamatrix:drawable/six";
+                            break;
+                        case 7:
+                            stringRsc = "scd.com.mediamatrix:drawable/seven";
+                            break;
+                        case 8:
+                            stringRsc = "scd.com.mediamatrix:drawable/eight";
+                            break;
+                        case 9:
+                            stringRsc = "scd.com.mediamatrix:drawable/nine";
+                            break;
+                        default:
+                            stringRsc = "scd.com.mediamatrix:drawable/ten";
+                            break;
+                    }
+
+                    if (stringRsc != null) {
+                        int id = getResources().getIdentifier(stringRsc, null, null);
+                        imageNumber.setImageResource(id);
+                    }
                 }
-            });
 
-            doneAction.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view)
-                {
-                    myFirebaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot snapshot)
-                        {
-                            String data[] = snapshot.getValue().toString().split(", ");
-
-                            for(int i = 0; i < data.length; i++)
-                            {
-                                ArrayList<Device> row = new ArrayList<Device>();
-                                while(i < data.length && !data[i].contains("+"))
-                                {
-                                    //Log.d("mm", data[i]);
-                                    try
-                                    {
-                                        Device weboshi = new Device(new JSONObject(data[i].substring(data[i].indexOf("json=") + "json=".length(), data[i].length()-1)));
-                                        row.add(weboshi);
-                                    }
-                                    catch(Exception e)
-                                    {
-                                        e.printStackTrace();
-                                    }
-                                    i++;
-                                }
-                                WorldCoordSystem.addRow(row);
-                            }
-
-                            for(ArrayList<Device> list : WorldCoordSystem.rows)
-                            {
-                                for(Device device : list)
-                                {
-                                    Log.d("mm", device.toString());
-                                }
-                            }
-                        }
-                        @Override
-                        public void onCancelled(FirebaseError firebaseError) {
-                        }
-                    });
+                public void onCancelled(FirebaseError firebaseError) {
                 }
             });
         }
         else
         {
-            newRow.setVisibility(View.GONE);
-            doneAction.setVisibility(View.GONE);
+            imageNumber.setVisibility(View.GONE);
+            imagePerson.setVisibility(View.GONE);
+            sessionHelp.setVisibility(View.GONE);
+            actionDone.setVisibility(View.GONE);
         }
 
-        SwipeView container = (SwipeView) findViewById(R.id.swipe_view);
-        container = new SwipeView(this);
-        container.requestFocus();
+        //SwipeView container = (SwipeView) findViewById(R.id.swipe_view);
+        //container = new SwipeView(this);
+        //container.requestFocus();
 
+    }
+
+    protected void onDestroy()
+    {
+        super.onDestroy();
+        Firebase condemned = new Firebase("https://mediamatrix.firebaseio.com/" + SESSION_ID + "/" + Build.SERIAL);
+        condemned.removeValue();
     }
 
 
