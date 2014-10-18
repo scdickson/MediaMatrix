@@ -19,6 +19,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 import java.util.ArrayList;
 import com.firebase.client.Firebase;
@@ -29,6 +30,7 @@ import java.io.ByteArrayOutputStream;
 public class MainActivity extends Activity implements View.OnClickListener
 {
     Button createMatrix, joinMatrix;
+    ImageView info;
     Context context;
 
     @Override
@@ -69,6 +71,8 @@ public class MainActivity extends Activity implements View.OnClickListener
         createMatrix.setOnClickListener(this);
         joinMatrix = (Button) findViewById(R.id.join_action);
         joinMatrix.setOnClickListener(this);
+        info = (ImageView) findViewById(R.id.info);
+        info.setOnClickListener(this);
 
     }
 
@@ -157,6 +161,19 @@ public class MainActivity extends Activity implements View.OnClickListener
             });
 
             alert.show();
+        }
+        else if(view.equals(info))
+        {
+            new AlertDialog.Builder(this)
+                    .setTitle("Developers, Developers, Developers!")
+                    .setMessage("Sam Dickson\nNiraj Venkat\nMichael Clayton\n\nBoilerMake 2014")
+                    .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // continue with delete
+                        }
+                    })
+                    .setIcon(R.drawable.doge)
+                    .show();
         }
     }
 

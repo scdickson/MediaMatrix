@@ -86,6 +86,13 @@ public class MatrixInitialization extends Activity
             sessionHelp.setVisibility(View.VISIBLE);
             sessionHelp.setText("Join With Code " + SESSION_ID + " and Press 'Done' When Finished!");
             actionDone.setVisibility(View.VISIBLE);
+            actionDone.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view)
+                {
+
+                }
+            });
 
             myFirebaseRef.addValueEventListener(new ValueEventListener()
             {
@@ -146,9 +153,11 @@ public class MatrixInitialization extends Activity
         }
         else
         {
-            imageNumber.setVisibility(View.GONE);
+            int id = getResources().getIdentifier("scd.com.mediamatrix:drawable/hourglass", null, null);
+            imageNumber.setImageResource(id);
+            sessionHelp.setText("Waiting for all users to join...");
+
             imagePerson.setVisibility(View.GONE);
-            sessionHelp.setVisibility(View.GONE);
             actionDone.setVisibility(View.GONE);
         }
 
