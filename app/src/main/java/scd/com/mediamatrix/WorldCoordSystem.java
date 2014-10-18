@@ -13,6 +13,8 @@ public class WorldCoordSystem{
 
     public static ArrayList<Device> devices = new ArrayList<Device>();
     public static ArrayList<ArrayList<Device>> rows = new ArrayList<ArrayList<Device>>();
+    public static ArrayList<Integer> maxWidths = new ArrayList<Integer>();
+    public static ArrayList<Integer> maxHeights = new ArrayList<Integer>();
     public static int worldWidth = 0;
     public static int worldHeight = 0;
 
@@ -28,7 +30,7 @@ public class WorldCoordSystem{
         rows.add(row);
     }
 
-    public static void setWorldCoordSystem() {
+    public static void setWorldCoordSystem(int x, int y) {
 
         for(ArrayList <Device> row : rows){
             int maxHeight = 0;
@@ -46,7 +48,21 @@ public class WorldCoordSystem{
             }
             worldHeight += maxHeight;
             if(maxWidth > worldWidth) worldWidth = maxWidth;
-
+            maxWidths.add(maxWidth);
+            maxHeights.add(maxHeight);
         }
+
+        int i = 0;
+        for(ArrayList <Device> row : rows){
+            for(Device device : row){
+                int currentMaxWidth = maxWidths.get(i).intValue();
+
+                if(device.isVert){
+
+                }
+            }
+            i++;
+        }
+
     }
 }

@@ -126,7 +126,12 @@ public class SwipeView extends View implements View.OnTouchListener
                 e.printStackTrace();
             }
 
-            MatrixInitialization.myFirebaseRef.child(MatrixInitialization.SESSION_ID).child(Build.SERIAL).child("json").setValue(deviceparams.toString());
+            MatrixInitialization.myFirebaseRef.child(Build.SERIAL).child("json").setValue(deviceparams.toString());
+
+            if(MatrixInitialization.isMaster)
+            {
+                new Device(deviceparams);
+            }
 
             reset = true;
             return true;
