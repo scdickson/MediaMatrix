@@ -75,25 +75,7 @@ public class PhotoActivity extends Activity {
                     }
                     Bitmap yourSelectedImage = BitmapFactory.decodeStream(imageStream);
                     //Log.d("mm", yourSelectedImage.getWidth() + " " + yourSelectedImage.getHeight());
-                    SortAndFill.setImagePoints(yourSelectedImage.getWidth(), yourSelectedImage.getHeight());
 
-                    for(Device device : SortAndFill.devices)
-                    {
-                        JSONObject coords = new JSONObject();
-                        try
-                        {
-                            coords.put("IMG_POINT_X", device.imagePoint.x);
-                            coords.put("IMG_POINT_Y", device.imagePoint.y);
-                            coords.put("IMG_HEIGHT", device.imageHeight);
-                            coords.put("IMG_WIDTH", device.imageWidth);
-                        }
-                        catch(Exception e)
-                        {
-                            e.printStackTrace();
-                        }
-
-                        myFirebaseRef.child(MatrixInitialization.SESSION_ID).child(device.deviceID).child("coords").setValue(coords.toString());
-                    }
 
                     // Update the image preview to be the selected image
                     imagePreview.setImageBitmap(yourSelectedImage);
@@ -102,6 +84,14 @@ public class PhotoActivity extends Activity {
                     //Log.d("mm", encodedImage);
 
                     myFirebaseRef.child(MatrixInitialization.SESSION_ID).child("IMAGE").setValue(encodedImage);
+
+                    SortAndFill.setImagePoints(yourSelectedImage.getWidth(), yourSelectedImage.getHeight());
+
+                    for(Device device : MatrixInitialization.devices)
+                    {
+                        String line = device.imagePoint.x + ";" + device.imagePoint.y + ";" + device.imageHeight + ";" + device.imageWidth;
+                        myFirebaseRef.child(MatrixInitialization.SESSION_ID).child(device.deviceID).child("coords").setValue(line);
+                    }
 
                     // Hide the device layout preview
                     scd.com.mediamatrix.DeviceLayoutView dv = (scd.com.mediamatrix.DeviceLayoutView) findViewById(R.id.deviceLayout);

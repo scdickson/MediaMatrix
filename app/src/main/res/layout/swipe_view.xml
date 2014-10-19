@@ -7,6 +7,7 @@
 
     <ImageView
         android:visibility="gone"
+        android:scaleType="fitXY"
         android:layout_centerInParent="true"
         android:id="@+id/fullscreen_image"
         android:layout_height="fill_parent"

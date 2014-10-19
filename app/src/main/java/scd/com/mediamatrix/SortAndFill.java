@@ -12,13 +12,12 @@ import java.util.Comparator;
  */
 public class SortAndFill
 {
-    static ArrayList<Device> devices;
     static int max_height, max_width;
 
     public static void sortByHeight()
     {
         Log.d("mm", "SORT BY HEIGHT");
-        Collections.sort(devices, new DeviceHeightComparator());
+        Collections.sort(MatrixInitialization.devices, new DeviceHeightComparator());
     }
 
     public static void Pack()
@@ -27,7 +26,7 @@ public class SortAndFill
         ArrayList<Device> notPositioned = new ArrayList<Device>();
         ArrayList<Device> positioned = new ArrayList<Device>();
 
-        for(Device device : devices)
+        for(Device device : MatrixInitialization.devices)
         {
             notPositioned.add(device);
         }
@@ -74,14 +73,14 @@ public class SortAndFill
 
         for(int i = 0; i < positioned.size(); i++)
         {
-            devices.set(i, positioned.get(i));
-            Log.d("mm", devices.get(i).toString());
+            MatrixInitialization.devices.set(i, positioned.get(i));
+            Log.d("mm", MatrixInitialization.devices.get(i).toString());
         }
     }
 
     public static void setImagePoints(int imageX, int imageY)
     {
-        for(Device device : devices)
+        for(Device device : MatrixInitialization.devices)
         {
             int newcoordX = (int)(((double)device.coords.get(0).x/(double)max_width) * imageX);
             int newcoordY = (int)(((double)device.coords.get(0).y/(double)max_height) * imageY);

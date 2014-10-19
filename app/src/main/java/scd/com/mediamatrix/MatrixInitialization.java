@@ -35,14 +35,15 @@ import java.util.ArrayList;
  */
 public class MatrixInitialization extends Activity
 {
+    public static final String URL = "https://mediamatrix.firebaseio.com";
     Context context;
     SwipeView swipeView;
     static String SESSION_ID;
     static boolean isMaster;
     static Firebase myFirebaseRef;
-    static int numConnected = 0;
     static int width = 0;
     Bitmap b = null;
+    ImageView imageNumber;
     static ArrayList<Device> devices = new ArrayList<Device>();
 
     @Override
@@ -77,7 +78,7 @@ public class MatrixInitialization extends Activity
         }
 
         Firebase.setAndroidContext(this);
-        myFirebaseRef = new Firebase("https://mediamatrix.firebaseio.com/" + SESSION_ID + "/");
+        myFirebaseRef = new Firebase(URL).child(SESSION_ID);
 
         if(!isMaster)
         {
@@ -87,7 +88,7 @@ public class MatrixInitialization extends Activity
         setContentView(R.layout.swipe_view);
         ImageView mainImage = (ImageView) findViewById(R.id.image);
 
-        final ImageView imageNumber = (ImageView) findViewById(R.id.image_number);
+        imageNumber = (ImageView) findViewById(R.id.image_number);
         ImageView imagePerson = (ImageView) findViewById(R.id.person_icon);
         final ImageView fullscreenImage = (ImageView) findViewById(R.id.fullscreen_image);
         TextView sessionHelp = (TextView) findViewById(R.id.session_help);
@@ -119,7 +120,7 @@ public class MatrixInitialization extends Activity
                     }
                     else {
                         Log.d("mm", "Calling SAF with ArrayList size " + devices.size() + " and width " + width);
-                        SortAndFill.devices = devices;
+
                         SortAndFill.max_width = width;
                         SortAndFill.sortByHeight();
                         SortAndFill.Pack();
@@ -130,7 +131,7 @@ public class MatrixInitialization extends Activity
                 }
             });
 
-            myFirebaseRef.addValueEventListener(new ValueEventListener()
+            /*myFirebaseRef.addValueEventListener(new ValueEventListener()
             {
                 @Override
                 public void onDataChange(DataSnapshot snapshot)
@@ -151,7 +152,7 @@ public class MatrixInitialization extends Activity
                                     width += dev.width;
 
                                     if (!devices.contains(dev)) {
-                                        Log.d("mm", "ADD");
+                                        //Log.d("mm", "ADD");
                                         devices.add(dev);
                                     }
                                 }
@@ -166,16 +167,21 @@ public class MatrixInitialization extends Activity
 
                             if(!devices.contains(dev))
                             {
-                                Log.d("mm", "ADD");
+                                //Log.d("mm", "ADD");
                                 devices.add(dev);
                             }
                         }
+
+
+
+
 
                         numConnected = data.length;
                     }
                     catch(Exception e){
                         e.printStackTrace();
                     }
+
 
                     String stringRsc = null;
 
@@ -220,6 +226,69 @@ public class MatrixInitialization extends Activity
 
                 public void onCancelled(FirebaseError firebaseError) {
                 }
+            });*/
+
+            myFirebaseRef.addChildEventListener(new ChildEventListener()
+            {
+                @Override
+                public void onChildAdded(DataSnapshot dataSnapshot, String s)
+                {
+                    for(DataSnapshot snapshot : dataSnapshot.getChildren())
+                    {
+                        if(snapshot.getName().equals("json"))
+                        {
+                            try
+                            {
+                                String data = (String) snapshot.getValue();
+                                JSONObject jsonObject = new JSONObject(data);
+                                Device dev = new Device(jsonObject);
+                                width += dev.width;
+                                if (!devices.contains(dev))
+                                {
+                                    devices.add(dev);
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                    updateNumConnected((int)dataSnapshot.getChildrenCount());
+                }
+
+                @Override
+                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+                }
+
+                @Override
+                public void onChildRemoved(DataSnapshot dataSnapshot)
+                {
+                    try
+                    {
+                        String data = (String) dataSnapshot.getValue();
+                        JSONObject jsonObject = new JSONObject(data);
+                        Device dev = new Device(jsonObject);
+                        devices.remove(dev);
+                        width -= dev.width;
+                        updateNumConnected((int) dataSnapshot.getChildrenCount());
+                    }
+                    catch(Exception e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                }
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+
+                }
             });
         }
         else
@@ -231,7 +300,7 @@ public class MatrixInitialization extends Activity
             imagePerson.setVisibility(View.GONE);
             actionDone.setVisibility(View.GONE);
 
-            Firebase imageRef = new Firebase("https://mediamatrix.firebaseio.com/" + SESSION_ID + "/IMAGE/");
+            Firebase imageRef = new Firebase(URL).child(SESSION_ID).child("IMAGE");
             imageRef.addValueEventListener(new ValueEventListener()
             {
                 public void onDataChange(DataSnapshot snapshot)
@@ -239,11 +308,9 @@ public class MatrixInitialization extends Activity
                     try
                     {
                         b = MainActivity.decodeBase64(snapshot.getValue().toString());
-                        //imageNumber.setImageBitmap(b);
                         fullscreenImage.setVisibility(View.VISIBLE);
                         imageNumber.setVisibility(View.GONE);
-                        Bitmap croppedBitmap = Bitmap.createBitmap(b, 551, 0, 61, 612); //source, x, y, width, height
-                        fullscreenImage.setImageBitmap(croppedBitmap);
+
                     }
                     catch(Exception e){}
                 }
@@ -252,25 +319,46 @@ public class MatrixInitialization extends Activity
                 }
             });
 
-            myFirebaseRef = new Firebase("https://mediamatrix.firebaseio.com/" + SESSION_ID + "/" + Build.SERIAL + "/");
-            myFirebaseRef.addValueEventListener(new ValueEventListener() {
+            myFirebaseRef = new Firebase(URL).child(SESSION_ID).child(Build.SERIAL);
+            myFirebaseRef.addChildEventListener(new ChildEventListener() {
                 @Override
-                public void onDataChange(DataSnapshot snapshot)
-                {
-                    try
+                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                    //Log.d("mm", dataSnapshot.getValue().toString());
+                    if(b != null)
                     {
-                        String line = snapshot.getValue().toString();
-                        JSONObject json = new JSONObject(line.substring(line.indexOf("coords=") + "coords=".length(), line.length()));
-                        if(json != null)
-                        {
-                            Log.d("mm", "NOT NULL HERE: " + json.toString());
-                            Bitmap croppedBitmap = Bitmap.createBitmap(b, json.getInt("IMG_POINT_X"), json.getInt("IMG_POINT_Y"), json.getInt("IMG_WIDTH"), json.getInt("IMG_HEIGHT"));
-                            imageNumber.setImageBitmap(croppedBitmap);
-                        }
+                        String coords[] = dataSnapshot.getValue().toString().split(";");
+                        int x = Integer.parseInt(coords[0]);
+                        int y = Integer.parseInt(coords[1]);
+                        int height = Integer.parseInt(coords[2]);
+                        int width = Integer.parseInt(coords[3]);
+                        Bitmap croppedBitmap = Bitmap.createBitmap(b, x, y, width, height); //source, x, y, width, height
+                        fullscreenImage.setImageBitmap(croppedBitmap);
                     }
-                    catch(Exception e){
-                        e.printStackTrace();
+                }
+
+                @Override
+                public void onChildChanged(DataSnapshot dataSnapshot, String s)
+                {
+                    if(b != null)
+                    {
+                        String coords[] = dataSnapshot.getValue().toString().split(";");
+                        int x = Integer.parseInt(coords[0]);
+                        int y = Integer.parseInt(coords[1]);
+                        int height = Integer.parseInt(coords[2]);
+                        int width = Integer.parseInt(coords[3]);
+                        Bitmap croppedBitmap = Bitmap.createBitmap(b, x, y, width, height); //source, x, y, width, height
+                        fullscreenImage.setImageBitmap(croppedBitmap);
                     }
+                }
+
+                @Override
+                public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+                }
+
+                @Override
+                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
                 }
 
                 @Override
@@ -278,6 +366,8 @@ public class MatrixInitialization extends Activity
 
                 }
             });
+
+
         }
 
         //SwipeView container = (SwipeView) findViewById(R.id.swipe_view);
@@ -293,19 +383,62 @@ public class MatrixInitialization extends Activity
         if(isMaster)
         {
             devices.clear();
-            numConnected = 0;
+            myFirebaseRef = null;
             width = 0;
             Firebase condemned = new Firebase("https://mediamatrix.firebaseio.com/" + SESSION_ID);
             condemned.removeValue();
         }
         else
         {
+            myFirebaseRef = null;
             Firebase condemned = new Firebase("https://mediamatrix.firebaseio.com/" + SESSION_ID + "/" + Build.SERIAL);
             condemned.removeValue();
         }
     }
 
+    private void updateNumConnected(int numConnected)
+    {
+        String stringRsc = null;
 
+        switch (numConnected) {
+            case 1:
+                stringRsc = "scd.com.mediamatrix:drawable/one";
+                break;
+            case 2:
+                stringRsc = "scd.com.mediamatrix:drawable/two";
+                break;
+            case 3:
+                stringRsc = "scd.com.mediamatrix:drawable/three";
+                break;
+            case 4:
+                stringRsc = "scd.com.mediamatrix:drawable/four";
+                break;
+            case 5:
+                stringRsc = "scd.com.mediamatrix:drawable/five";
+                break;
+            case 6:
+                stringRsc = "scd.com.mediamatrix:drawable/six";
+                break;
+            case 7:
+                stringRsc = "scd.com.mediamatrix:drawable/seven";
+                break;
+            case 8:
+                stringRsc = "scd.com.mediamatrix:drawable/eight";
+                break;
+            case 9:
+                stringRsc = "scd.com.mediamatrix:drawable/nine";
+                break;
+            default:
+                stringRsc = "scd.com.mediamatrix:drawable/ten";
+                break;
+        }
+
+        if (stringRsc != null)
+        {
+            int id = getResources().getIdentifier(stringRsc, null, null);
+            imageNumber.setImageResource(id);
+        }
+    }
 
 
 
