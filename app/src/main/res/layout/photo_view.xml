@@ -39,7 +39,8 @@
         android:layout_centerInParent="true"
         android:background="@drawable/rounded_rectangle_transparent"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:visibility="invisible">
 
         <ImageView
             android:id="@+id/preview"
@@ -49,4 +50,10 @@
             android:layout_height="400dp"
             android:src="@drawable/placeholder"/>
     </RelativeLayout>
+
+    <scd.com.mediamatrix.DeviceLayoutView
+        android:layout_width="600px"
+        android:layout_height="600px"
+        android:layout_centerInParent="true"
+        android:id="@+id/deviceLayout"/>
 </RelativeLayout>

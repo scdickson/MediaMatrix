@@ -6,14 +6,13 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.firebase.client.Firebase;
@@ -82,6 +81,14 @@ public class PhotoActivity extends Activity {
                     //Log.d("mm", encodedImage);
 
                     myFirebaseRef.child(MatrixInitialization.SESSION_ID).child("IMAGE").setValue(encodedImage);
+
+                    // Hide the device layout preview
+                    scd.com.mediamatrix.DeviceLayoutView dv = (scd.com.mediamatrix.DeviceLayoutView) findViewById(R.id.deviceLayout);
+                    dv.setVisibility(View.INVISIBLE);
+
+                    // Unhide the image view
+                    RelativeLayout rl = (RelativeLayout) findViewById(R.id.photoPreviewRelativeLayout);
+                    rl.setVisibility(View.VISIBLE);
                 }
         }
     }
