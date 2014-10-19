@@ -1,6 +1,9 @@
 package scd.com.mediamatrix;
 
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -89,6 +92,25 @@ public class SortAndFill
             device.imageHeight = (int)((((double)device.height/(double)max_height)) * imageY);
             Log.d("mm", "x=" + device.imagePoint.x + ", " + "y=" + device.imagePoint.y + ", w=" + device.imageWidth + ", h=" + device.imageHeight);
         }
+    }
+
+    public static Canvas drawDevices(){
+        Canvas canvas = new Canvas();
+        int i = 0;
+        for(Device device : MatrixInitialization.devices){
+            int left = device.coords.get(0).x;
+            int top = device.coords.get(0).y;
+            int right = device.coords.get(0).x + device.width;
+            int bottom = device.coords.get(0).y + device.height;
+
+            Rect rect = new Rect(left, top, right, bottom);
+            Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG | Paint.FILTER_BITMAP_FLAG);
+
+            canvas.drawRect(rect, paint);
+            canvas.drawText(i + "", (left+right)/2, (top+bottom)/2, paint);
+            i++;
+        }
+        return canvas;
     }
 
     static class DeviceHeightComparator implements Comparator<Device> {
