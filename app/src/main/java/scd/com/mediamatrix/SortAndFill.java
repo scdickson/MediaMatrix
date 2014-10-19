@@ -85,11 +85,17 @@ public class SortAndFill
     {
         for(Device device : MatrixInitialization.devices)
         {
+            int mult = 1;
+
+            if(device.deviceID.equals("275502730001147"))
+            {
+                //mult = 2;
+            }
             int newcoordX = (int)(((double)device.coords.get(0).x/(double)max_width) * imageX);
             int newcoordY = (int)(((double)device.coords.get(0).y/(double)max_height) * imageY);
             device.imagePoint = new Point(newcoordX, newcoordY);
-            device.imageWidth = (int)((((double)device.width/(double)max_width)) * imageX);
-            device.imageHeight = (int)((((double)device.height/(double)max_height)) * imageY);
+            device.imageWidth = (int)((((double)device.width/(double)max_width)) * imageX) * mult;
+            device.imageHeight = (int)((((double)device.height/(double)max_height)) * imageY) * mult;
             Log.d("mm", "x=" + device.imagePoint.x + ", " + "y=" + device.imagePoint.y + ", w=" + device.imageWidth + ", h=" + device.imageHeight);
         }
     }

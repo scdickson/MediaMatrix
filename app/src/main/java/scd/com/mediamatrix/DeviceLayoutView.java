@@ -9,6 +9,8 @@ import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.firebase.client.Firebase;
+
 /**
  * Created by sdickson on 10/18/14.
  */
@@ -57,13 +59,15 @@ public class DeviceLayoutView extends View
     {
         int i = 1;
         RectangleLayout deviceLayout;
-        for(Device device : MatrixInitialization.devices) {
+        for(Device device : MatrixInitialization.devices)
+        {
 
             float left = device.coords.get(0).x/10f+2;
             float top = device.coords.get(0).y/10f+2;
             float right = (device.coords.get(0).x + device.width)/10f+2;
             float bottom = (device.coords.get(0).y + device.height)/10f+2;
 
+            MatrixInitialization.myFirebaseRef.child(device.deviceID).child("order").setValue(i);
             deviceLayout = new RectangleLayout(left, top, right, bottom, i);
             deviceLayout.draw(canvas);
             i++;
