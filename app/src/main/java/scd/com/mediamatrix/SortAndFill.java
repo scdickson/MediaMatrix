@@ -12,25 +12,16 @@ import java.util.Comparator;
  */
 public class SortAndFill
 {
-    ArrayList<Device> devices;
-    int max_height, max_width;
+    static ArrayList<Device> devices;
+    static int max_height, max_width;
 
-    public SortAndFill(ArrayList<Device> devices, int width)
-    {
-        Log.d("mm", "OK. New SortAndFill.");
-        this.devices = devices;
-        this.max_width = width;
-        sortByHeight();
-
-    }
-
-    private void sortByHeight()
+    public static void sortByHeight()
     {
         Log.d("mm", "SORT BY HEIGHT");
         Collections.sort(devices, new DeviceHeightComparator());
     }
 
-    public void Pack()
+    public static void Pack()
     {
         Log.d("mm", "BEGIN PACK");
         ArrayList<Device> notPositioned = new ArrayList<Device>();
@@ -88,7 +79,17 @@ public class SortAndFill
         }
     }
 
-    class DeviceHeightComparator implements Comparator<Device> {
+    public static void setImagePoints(int imageX, int imageY){
+        for(Device device : devices){
+            int newcoordX = (device.coords.get(0).x/max_width) * imageX;
+            int newcoordY = (device.coords.get(0).x/max_height) * imageY;
+            device.imagePoint = new Point(newcoordX, newcoordY);
+            device.imageWidth = (device.width/max_width) * imageX;
+            device.imageHeight = (device.height/max_height) * imageY;
+        }
+    }
+
+    static class DeviceHeightComparator implements Comparator<Device> {
         @Override
         public int compare(Device a, Device b)
         {

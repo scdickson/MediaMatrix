@@ -73,6 +73,7 @@ public class PhotoActivity extends Activity {
                         e.printStackTrace();
                     }
                     Bitmap yourSelectedImage = BitmapFactory.decodeStream(imageStream);
+                    SortAndFill.setImagePoints(yourSelectedImage.getWidth(), yourSelectedImage.getHeight());
 
                     // Update the image preview to be the selected image
                     imagePreview.setImageBitmap(yourSelectedImage);

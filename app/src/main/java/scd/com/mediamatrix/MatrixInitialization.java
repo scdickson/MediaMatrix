@@ -115,8 +115,10 @@ public class MatrixInitialization extends Activity
                     }
                     else {
                         Log.d("mm", "Calling SAF with ArrayList size " + devices.size() + " and width " + width);
-                        SortAndFill saf = new SortAndFill(devices, width);
-                        saf.Pack();
+                        SortAndFill.devices = devices;
+                        SortAndFill.max_width = width;
+                        SortAndFill.sortByHeight();
+                        SortAndFill.Pack();
                         // Open up the activity that contains the photo selection process
                         Intent photoActivityIntent = new Intent(MatrixInitialization.this, PhotoActivity.class);
                         startActivity(photoActivityIntent);

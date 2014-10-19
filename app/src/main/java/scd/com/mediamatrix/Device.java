@@ -20,6 +20,9 @@ public class Device {
     boolean isVert;
     boolean flipped;
     ArrayList<Point> coords = new ArrayList<Point>();
+    Point imagePoint;
+    int imageWidth;
+    int imageHeight;
 
 
     public Device(JSONObject jsonObject) {
