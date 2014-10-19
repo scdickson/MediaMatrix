@@ -326,19 +326,13 @@ public class MatrixInitialization extends Activity
                     //Log.d("mm", dataSnapshot.getValue().toString());
                     if(b != null)
                     {
-                        try {
-                            String coords[] = dataSnapshot.getValue().toString().split(";");
-                            int x = Integer.parseInt(coords[0]);
-                            int y = Integer.parseInt(coords[1]);
-                            int height = Integer.parseInt(coords[2]);
-                            int width = Integer.parseInt(coords[3]);
-                            Bitmap croppedBitmap = Bitmap.createBitmap(b, x, y, width, height); //source, x, y, width, height
-                            fullscreenImage.setImageBitmap(croppedBitmap);
-                        }
-                        catch(Exception e)
-                        {
-                            e.printStackTrace();
-                        }
+                        String coords[] = dataSnapshot.getValue().toString().split(";");
+                        int x = Integer.parseInt(coords[0]);
+                        int y = Integer.parseInt(coords[1]);
+                        int height = Integer.parseInt(coords[2]);
+                        int width = Integer.parseInt(coords[3]);
+                        Bitmap croppedBitmap = Bitmap.createBitmap(b, x, y, width, height); //source, x, y, width, height
+                        fullscreenImage.setImageBitmap(croppedBitmap);
                     }
                 }
 
