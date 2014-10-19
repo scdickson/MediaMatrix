@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -41,7 +42,8 @@ public class MatrixInitialization extends Activity
     static Firebase myFirebaseRef;
     static int numConnected = 0;
     static int width = 0;
-    ArrayList<Device> devices = new ArrayList<Device>();
+    Bitmap b = null;
+    static ArrayList<Device> devices = new ArrayList<Device>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +79,8 @@ public class MatrixInitialization extends Activity
         Firebase.setAndroidContext(this);
         myFirebaseRef = new Firebase("https://mediamatrix.firebaseio.com/" + SESSION_ID + "/");
 
-        if(!isMaster) {
+        if(!isMaster)
+        {
             myFirebaseRef.child(Build.SERIAL).child("json").setValue(deviceparams.toString());
         }
 
@@ -86,6 +89,7 @@ public class MatrixInitialization extends Activity
 
         final ImageView imageNumber = (ImageView) findViewById(R.id.image_number);
         ImageView imagePerson = (ImageView) findViewById(R.id.person_icon);
+        final ImageView fullscreenImage = (ImageView) findViewById(R.id.fullscreen_image);
         TextView sessionHelp = (TextView) findViewById(R.id.session_help);
         Button actionDone = (Button) findViewById(R.id.action_done);
 
@@ -140,8 +144,8 @@ public class MatrixInitialization extends Activity
                         {
                             for(String line : data)
                             {
-                                if(!line.contains("IMAGE")) {
-                                    JSONObject json = new JSONObject(line.substring(line.indexOf("json=") + "json=".length(), line.length() - 1));
+                                if(line.contains("json")) {
+                                    JSONObject json = new JSONObject(line.substring(line.indexOf("json=") + "json=".length(), line.length()));
                                     Device dev = new Device(json);
                                     //Log.d("mm", dev.toString());
                                     width += dev.width;
@@ -155,7 +159,7 @@ public class MatrixInitialization extends Activity
                         }
                         else //Catches case where only one device is in matrix
                         {
-                            JSONObject json = new JSONObject(data[0].substring(data[0].indexOf("json=") + "json=".length(), data[0].length()-1));
+                            JSONObject json = new JSONObject(data[0].substring(data[0].indexOf("json=") + "json=".length(), data[0].length()));
                             Device dev = new Device(json);
                             //Log.d("mm", dev.toString());
                             width += dev.width;
@@ -227,21 +231,41 @@ public class MatrixInitialization extends Activity
             imagePerson.setVisibility(View.GONE);
             actionDone.setVisibility(View.GONE);
 
-            myFirebaseRef = new Firebase("https://mediamatrix.firebaseio.com/" + SESSION_ID + "/IMAGE/");
+            Firebase imageRef = new Firebase("https://mediamatrix.firebaseio.com/" + SESSION_ID + "/IMAGE/");
+            imageRef.addValueEventListener(new ValueEventListener()
+            {
+                public void onDataChange(DataSnapshot snapshot)
+                {
+                    try
+                    {
+                        b = MainActivity.decodeBase64(snapshot.getValue().toString());
+                        //imageNumber.setImageBitmap(b);
+                        fullscreenImage.setVisibility(View.VISIBLE);
+                        imageNumber.setVisibility(View.GONE);
+                        Bitmap croppedBitmap = Bitmap.createBitmap(b, 551, 0, 61, 612); //source, x, y, width, height
+                        fullscreenImage.setImageBitmap(croppedBitmap);
+                    }
+                    catch(Exception e){}
+                }
+
+                public void onCancelled(FirebaseError firebaseError) {
+                }
+            });
+
+            myFirebaseRef = new Firebase("https://mediamatrix.firebaseio.com/" + SESSION_ID + "/" + Build.SERIAL + "/");
             myFirebaseRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshot)
                 {
                     try
                     {
-                        String rawImage = snapshot.getValue().toString();
-                        //if (rawImage != null && rawImage.contains("IMAGE"))
-                        if (rawImage != null)
+                        String line = snapshot.getValue().toString();
+                        JSONObject json = new JSONObject(line.substring(line.indexOf("coords=") + "coords=".length(), line.length()));
+                        if(json != null)
                         {
-                            //Log.d("mm", rawImage.substring(rawImage.indexOf("{IMAGE=") + "{IMAGE=".length()));
-                            Bitmap b = MainActivity.decodeBase64(rawImage);
-                            imageNumber.setImageBitmap(b);
-
+                            Log.d("mm", "NOT NULL HERE: " + json.toString());
+                            Bitmap croppedBitmap = Bitmap.createBitmap(b, json.getInt("IMG_POINT_X"), json.getInt("IMG_POINT_Y"), json.getInt("IMG_WIDTH"), json.getInt("IMG_HEIGHT"));
+                            imageNumber.setImageBitmap(croppedBitmap);
                         }
                     }
                     catch(Exception e){
@@ -249,7 +273,9 @@ public class MatrixInitialization extends Activity
                     }
                 }
 
+                @Override
                 public void onCancelled(FirebaseError firebaseError) {
+
                 }
             });
         }

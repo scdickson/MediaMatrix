@@ -17,6 +17,8 @@ import android.widget.TextView;
 
 import com.firebase.client.Firebase;
 
+import org.json.JSONObject;
+
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
@@ -72,7 +74,26 @@ public class PhotoActivity extends Activity {
                         e.printStackTrace();
                     }
                     Bitmap yourSelectedImage = BitmapFactory.decodeStream(imageStream);
+                    //Log.d("mm", yourSelectedImage.getWidth() + " " + yourSelectedImage.getHeight());
                     SortAndFill.setImagePoints(yourSelectedImage.getWidth(), yourSelectedImage.getHeight());
+
+                    for(Device device : SortAndFill.devices)
+                    {
+                        JSONObject coords = new JSONObject();
+                        try
+                        {
+                            coords.put("IMG_POINT_X", device.imagePoint.x);
+                            coords.put("IMG_POINT_Y", device.imagePoint.y);
+                            coords.put("IMG_HEIGHT", device.imageHeight);
+                            coords.put("IMG_WIDTH", device.imageWidth);
+                        }
+                        catch(Exception e)
+                        {
+                            e.printStackTrace();
+                        }
+
+                        myFirebaseRef.child(MatrixInitialization.SESSION_ID).child(device.deviceID).child("coords").setValue(coords.toString());
+                    }
 
                     // Update the image preview to be the selected image
                     imagePreview.setImageBitmap(yourSelectedImage);

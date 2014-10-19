@@ -6,6 +6,13 @@
     android:background="@drawable/white_noise">
 
     <ImageView
+        android:visibility="gone"
+        android:layout_centerInParent="true"
+        android:id="@+id/fullscreen_image"
+        android:layout_height="fill_parent"
+        android:layout_width="fill_parent"/>
+
+    <ImageView
         android:layout_centerInParent="true"
         android:id="@+id/image"
         android:layout_height="fill_parent"

@@ -109,3 +109,9 @@ build/
 .idea/workspace.xml
 
 .idea/workspace.xml
+
+.idea/misc.xml
+
+app/app.iml
+
+MediaMatrix.iml

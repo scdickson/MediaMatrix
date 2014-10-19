@@ -79,13 +79,16 @@ public class SortAndFill
         }
     }
 
-    public static void setImagePoints(int imageX, int imageY){
-        for(Device device : devices){
-            int newcoordX = (device.coords.get(0).x/max_width) * imageX;
-            int newcoordY = (device.coords.get(0).x/max_height) * imageY;
+    public static void setImagePoints(int imageX, int imageY)
+    {
+        for(Device device : devices)
+        {
+            int newcoordX = (int)(((double)device.coords.get(0).x/(double)max_width) * imageX);
+            int newcoordY = (int)(((double)device.coords.get(0).y/(double)max_height) * imageY);
             device.imagePoint = new Point(newcoordX, newcoordY);
-            device.imageWidth = (device.width/max_width) * imageX;
-            device.imageHeight = (device.height/max_height) * imageY;
+            device.imageWidth = (int)((((double)device.width/(double)max_width)) * imageX);
+            device.imageHeight = (int)((((double)device.height/(double)max_height)) * imageY);
+            Log.d("mm", "x=" + device.imagePoint.x + ", " + "y=" + device.imagePoint.y + ", w=" + device.imageWidth + ", h=" + device.imageHeight);
         }
     }
 
