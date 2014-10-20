@@ -1,7 +1,10 @@
 package scd.com.mediamatrix;
 
+import android.content.Context;
 import android.graphics.Point;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.WindowManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,6 +20,8 @@ public class SortAndFill
     public static void sortByHeight()
     {
         Log.d("mm", "SORT BY HEIGHT");
+
+
         Collections.sort(MatrixInitialization.devices, new DeviceHeightComparator());
     }
 
@@ -82,6 +87,7 @@ public class SortAndFill
     {
         for(Device device : MatrixInitialization.devices)
         {
+
             int newcoordX = (int)(((double)device.coords.get(0).x/(double)max_width) * imageX);
             int newcoordY = (int)(((double)device.coords.get(0).y/(double)max_height) * imageY);
             device.imagePoint = new Point(newcoordX, newcoordY);
