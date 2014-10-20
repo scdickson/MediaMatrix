@@ -43,6 +43,7 @@ public class MatrixInitialization extends Activity
     static Firebase myFirebaseRef;
     static int width = 0;
     Bitmap b = null;
+    int numConnected = 0;
     ImageView imageNumber;
     static ArrayList<Device> devices = new ArrayList<Device>();
 
@@ -237,6 +238,7 @@ public class MatrixInitialization extends Activity
                     {
                         if(snapshot.getName().equals("json"))
                         {
+                            numConnected++;
                             try
                             {
                                 String data = (String) snapshot.getValue();
@@ -246,7 +248,9 @@ public class MatrixInitialization extends Activity
                                 if (!devices.contains(dev))
                                 {
                                     devices.add(dev);
+                                    updateNumConnected();
                                 }
+
                             }
                             catch (Exception e)
                             {
@@ -254,7 +258,7 @@ public class MatrixInitialization extends Activity
                             }
                         }
                     }
-                    updateNumConnected((int)dataSnapshot.getChildrenCount());
+                    //updateNumConnected((int)dataSnapshot.getChildrenCount());
                 }
 
                 @Override
@@ -267,12 +271,14 @@ public class MatrixInitialization extends Activity
                 {
                     try
                     {
+                        numConnected--;
                         String data = (String) dataSnapshot.getValue();
                         JSONObject jsonObject = new JSONObject(data);
                         Device dev = new Device(jsonObject);
                         devices.remove(dev);
                         width -= dev.width;
-                        updateNumConnected((int) dataSnapshot.getChildrenCount());
+                        updateNumConnected();
+                        //updateNumConnected((int) dataSnapshot.getChildrenCount());
                     }
                     catch(Exception e)
                     {
@@ -300,6 +306,8 @@ public class MatrixInitialization extends Activity
             imagePerson.setVisibility(View.GONE);
             actionDone.setVisibility(View.GONE);
 
+
+
             Firebase imageRef = new Firebase(URL).child(SESSION_ID).child("IMAGE");
             imageRef.addValueEventListener(new ValueEventListener()
             {
@@ -322,10 +330,11 @@ public class MatrixInitialization extends Activity
             myFirebaseRef = new Firebase(URL).child(SESSION_ID).child(Build.SERIAL);
             myFirebaseRef.addChildEventListener(new ChildEventListener() {
                 @Override
-                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                    //Log.d("mm", dataSnapshot.getValue().toString());
-                    if(b != null)
+                public void onChildAdded(DataSnapshot dataSnapshot, String s)
+                {
+                    if(dataSnapshot.getName().equals("order"))
                     {
+<<<<<<< HEAD
                         try {
                             String coords[] = dataSnapshot.getValue().toString().split(";");
                             int x = Integer.parseInt(coords[0]);
@@ -338,6 +347,66 @@ public class MatrixInitialization extends Activity
                         catch(Exception e)
                         {
                             e.printStackTrace();
+=======
+                        int num = ((Long) (dataSnapshot.getValue())).intValue();
+
+                        String stringRsc = null;
+
+                        switch (num) {
+                            case 1:
+                                stringRsc = "scd.com.mediamatrix:drawable/one";
+                                break;
+                            case 2:
+                                stringRsc = "scd.com.mediamatrix:drawable/two";
+                                break;
+                            case 3:
+                                stringRsc = "scd.com.mediamatrix:drawable/three";
+                                break;
+                            case 4:
+                                stringRsc = "scd.com.mediamatrix:drawable/four";
+                                break;
+                            case 5:
+                                stringRsc = "scd.com.mediamatrix:drawable/five";
+                                break;
+                            case 6:
+                                stringRsc = "scd.com.mediamatrix:drawable/six";
+                                break;
+                            case 7:
+                                stringRsc = "scd.com.mediamatrix:drawable/seven";
+                                break;
+                            case 8:
+                                stringRsc = "scd.com.mediamatrix:drawable/eight";
+                                break;
+                            case 9:
+                                stringRsc = "scd.com.mediamatrix:drawable/nine";
+                                break;
+                            default:
+                                stringRsc = "scd.com.mediamatrix:drawable/zero";
+                                break;
+                        }
+
+                        if (stringRsc != null)
+                        {
+                            int id = getResources().getIdentifier(stringRsc, null, null);
+                            imageNumber.setImageResource(id);
+                        }
+
+                    }
+                    else if(dataSnapshot.getName().equals("coords")) {
+                        //Log.d("mm", dataSnapshot.getValue().toString());
+                        if (b != null) {
+                            try {
+                                String coords[] = dataSnapshot.getValue().toString().split(";");
+                                int x = Integer.parseInt(coords[0]);
+                                int y = Integer.parseInt(coords[1]);
+                                int height = Integer.parseInt(coords[2]);
+                                int width = Integer.parseInt(coords[3]);
+                                Bitmap croppedBitmap = Bitmap.createBitmap(b, x, y, width, height); //source, x, y, width, height
+                                fullscreenImage.setImageBitmap(croppedBitmap);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+>>>>>>> working
                         }
                     }
                 }
@@ -345,15 +414,68 @@ public class MatrixInitialization extends Activity
                 @Override
                 public void onChildChanged(DataSnapshot dataSnapshot, String s)
                 {
-                    if(b != null)
+                    if(dataSnapshot.getName().equals("order"))
                     {
-                        String coords[] = dataSnapshot.getValue().toString().split(";");
-                        int x = Integer.parseInt(coords[0]);
-                        int y = Integer.parseInt(coords[1]);
-                        int height = Integer.parseInt(coords[2]);
-                        int width = Integer.parseInt(coords[3]);
-                        Bitmap croppedBitmap = Bitmap.createBitmap(b, x, y, width, height); //source, x, y, width, height
-                        fullscreenImage.setImageBitmap(croppedBitmap);
+                        Log.d("mm", "NUM " + dataSnapshot.getValue());
+
+                        long num = (Long) (dataSnapshot.getValue());
+
+                        String stringRsc = null;
+
+                        switch ((int)num) {
+                            case 1:
+                                stringRsc = "scd.com.mediamatrix:drawable/one";
+                                break;
+                            case 2:
+                                stringRsc = "scd.com.mediamatrix:drawable/two";
+                                break;
+                            case 3:
+                                stringRsc = "scd.com.mediamatrix:drawable/three";
+                                break;
+                            case 4:
+                                stringRsc = "scd.com.mediamatrix:drawable/four";
+                                break;
+                            case 5:
+                                stringRsc = "scd.com.mediamatrix:drawable/five";
+                                break;
+                            case 6:
+                                stringRsc = "scd.com.mediamatrix:drawable/six";
+                                break;
+                            case 7:
+                                stringRsc = "scd.com.mediamatrix:drawable/seven";
+                                break;
+                            case 8:
+                                stringRsc = "scd.com.mediamatrix:drawable/eight";
+                                break;
+                            case 9:
+                                stringRsc = "scd.com.mediamatrix:drawable/nine";
+                                break;
+                            default:
+                                stringRsc = "scd.com.mediamatrix:drawable/zero";
+                                break;
+                        }
+
+                        if (stringRsc != null)
+                        {
+                            int id = getResources().getIdentifier(stringRsc, null, null);
+                            imageNumber.setImageResource(id);
+                        }
+                    }
+                    else if(dataSnapshot.getName().equals("coords")) {
+                        //Log.d("mm", dataSnapshot.getValue().toString());
+                        if (b != null) {
+                            try {
+                                String coords[] = dataSnapshot.getValue().toString().split(";");
+                                int x = Integer.parseInt(coords[0]);
+                                int y = Integer.parseInt(coords[1]);
+                                int height = Integer.parseInt(coords[2]);
+                                int width = Integer.parseInt(coords[3]);
+                                Bitmap croppedBitmap = Bitmap.createBitmap(b, x, y, width, height); //source, x, y, width, height
+                                fullscreenImage.setImageBitmap(croppedBitmap);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
                     }
                 }
 
@@ -385,10 +507,10 @@ public class MatrixInitialization extends Activity
     protected void onDestroy()
     {
         super.onDestroy();
+        devices.clear();
 
         if(isMaster)
         {
-            devices.clear();
             myFirebaseRef = null;
             width = 0;
             Firebase condemned = new Firebase("https://mediamatrix.firebaseio.com/" + SESSION_ID);
@@ -402,7 +524,7 @@ public class MatrixInitialization extends Activity
         }
     }
 
-    private void updateNumConnected(int numConnected)
+    private void updateNumConnected()
     {
         String stringRsc = null;
 

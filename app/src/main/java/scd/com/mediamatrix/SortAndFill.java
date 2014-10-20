@@ -1,8 +1,15 @@
 package scd.com.mediamatrix;
 
+<<<<<<< HEAD
 import android.content.Context;
 import android.graphics.Point;
 import android.util.DisplayMetrics;
+=======
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Point;
+import android.graphics.Rect;
+>>>>>>> working
 import android.util.Log;
 import android.view.WindowManager;
 
@@ -87,14 +94,42 @@ public class SortAndFill
     {
         for(Device device : MatrixInitialization.devices)
         {
+<<<<<<< HEAD
 
+=======
+            int mult = 1;
+
+            if(device.deviceID.equals("275502730001147"))
+            {
+                //mult = 2;
+            }
+>>>>>>> working
             int newcoordX = (int)(((double)device.coords.get(0).x/(double)max_width) * imageX);
             int newcoordY = (int)(((double)device.coords.get(0).y/(double)max_height) * imageY);
             device.imagePoint = new Point(newcoordX, newcoordY);
-            device.imageWidth = (int)((((double)device.width/(double)max_width)) * imageX);
-            device.imageHeight = (int)((((double)device.height/(double)max_height)) * imageY);
+            device.imageWidth = (int)((((double)device.width/(double)max_width)) * imageX) * mult;
+            device.imageHeight = (int)((((double)device.height/(double)max_height)) * imageY) * mult;
             Log.d("mm", "x=" + device.imagePoint.x + ", " + "y=" + device.imagePoint.y + ", w=" + device.imageWidth + ", h=" + device.imageHeight);
         }
+    }
+
+    public static Canvas drawDevices(){
+        Canvas canvas = new Canvas();
+        int i = 0;
+        for(Device device : MatrixInitialization.devices){
+            int left = device.coords.get(0).x;
+            int top = device.coords.get(0).y;
+            int right = device.coords.get(0).x + device.width;
+            int bottom = device.coords.get(0).y + device.height;
+
+            Rect rect = new Rect(left, top, right, bottom);
+            Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG | Paint.FILTER_BITMAP_FLAG);
+
+            canvas.drawRect(rect, paint);
+            canvas.drawText(i + "", (left+right)/2, (top+bottom)/2, paint);
+            i++;
+        }
+        return canvas;
     }
 
     static class DeviceHeightComparator implements Comparator<Device> {

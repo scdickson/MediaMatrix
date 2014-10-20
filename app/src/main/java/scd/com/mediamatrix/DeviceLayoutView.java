@@ -4,8 +4,12 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.View;
+
+import com.firebase.client.Firebase;
 
 /**
  * Created by sdickson on 10/18/14.
@@ -53,11 +57,22 @@ public class DeviceLayoutView extends View
 
     public void onDraw(Canvas canvas)
     {
-        RectangleLayout deviceLayoutOne = new RectangleLayout(0, 0, 200, 100, 1);
-        RectangleLayout deviceLayoutTwo = new RectangleLayout(200, 0, 350, 500, 2);
+        int i = 1;
+        RectangleLayout deviceLayout;
+        for(Device device : MatrixInitialization.devices)
+        {
 
-        deviceLayoutOne.draw(canvas);
-        deviceLayoutTwo.draw(canvas);
+            float left = device.coords.get(0).x/10f+2;
+            float top = device.coords.get(0).y/10f+2;
+            float right = (device.coords.get(0).x + device.width)/10f+2;
+            float bottom = (device.coords.get(0).y + device.height)/10f+2;
+
+            MatrixInitialization.myFirebaseRef.child(device.deviceID).child("order").setValue(i);
+            deviceLayout = new RectangleLayout(left, top, right, bottom, i);
+            deviceLayout.draw(canvas);
+            i++;
+        }
+        canvas.drawRect(0, 0, 500, 500, paint);
     }
 
     private class RectangleLayout {
@@ -102,7 +117,11 @@ public class DeviceLayoutView extends View
 
             // Draw the rectangle
             p.setStrokeWidth(5);
-            c.drawRect(startX, startY, endX, endY, p);
+            //c.drawRect(startX, startY, endX, endY, p);
+
+            Rect rect = new Rect((int)startX, (int)startY, (int)endX, (int)endY);
+            RectF rectF = new RectF(rect);
+            c.drawRoundRect(rectF, 10, 10, p);
         }
     }
 }

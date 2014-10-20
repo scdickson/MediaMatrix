@@ -9,6 +9,13 @@ import java.util.ArrayList;
 /**
  * <a href="http://d.android.com/tools/testing/testing_android.html">Testing Fundamentals</a>
  */
+
+
+//-----------------------------
+//DEPRECATED
+//-----------------------------
+
+
 public class WorldCoordSystem{
 
     public static ArrayList<Device> devices = new ArrayList<Device>();
